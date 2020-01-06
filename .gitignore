@@ -7,6 +7,7 @@
 /private
 /index.html
 /shields.env
+gh-badges/package-lock.json
 
 # Folder view configuration files
 .DS_Store
@@ -15,6 +16,13 @@ Desktop.ini
 # Thumbnail cache files
 ._*
 Thumbs.db
+
+# Visual Studio Code User Settings
+.vscode/settings.json
+
+# eclipse
+.project
+.settings
 
 # Files that might appear on external disks
 .Spotlight-V100
@@ -81,3 +89,27 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# Temporary build artifacts.
+/build
+.next
+badge-examples.json
+supported-features.json
+service-definitions.yml
+
+# Local runtime configuration.
+/config/local*.yml
+
+# Template for the local runtime configuration.
+!/config/local*.template.yml
+
+# Gatsby
+/.cache
+/public
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+
+# Rendered API docs
+/api-docs/

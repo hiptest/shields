@@ -1,20 +1,25 @@
-FROM node:8.16.1-alpine
-
-RUN apk add --no-cache gettext imagemagick librsvg ttf-dejavu
-ENV FALLBACK_FONT_PATH /usr/share/fonts/ttf-dejavu/DejaVuSans.ttf
+FROM node:8-alpine
 
 RUN mkdir -p /usr/src/app
 RUN mkdir /usr/src/app/private
 WORKDIR /usr/src/app
 
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
-COPY package.json /usr/src/app/
-RUN npm install && \
-    rm -rf /tmp/npm-* /root/.npm
-COPY . /usr/src/app
+COPY package.json package-lock.json /usr/src/app/
+# Without the gh-badges package.json and CLI script in place, `npm ci` will fail.
+COPY gh-badges /usr/src/app/gh-badges/
 
-CMD envsubst < secret.tpl.json > ./private/secret.json && npm start
+# We need dev deps to build the front end. We don't need Cypress, though.
+RUN NODE_ENV=development CYPRESS_INSTALL_BINARY=0 npm ci
+
+COPY . /usr/src/app
+RUN npm run build
+RUN npm prune --production
+RUN npm cache clean --force
+
+# Run the server using production configs.
+ENV NODE_ENV production
+
+CMD node server
 
 ENV BIND_ADDRESS 0.0.0.0
 ENV INFOSITE hiptest-badges.scalingo.io
